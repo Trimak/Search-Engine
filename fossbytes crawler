@@ -1,0 +1,34 @@
+import sys, thread, Queue, re, urllib, urlparse, time, os, sys, datetime
+
+dupcheck = set()  
+q = Queue.Queue(1000)  
+
+def queueURLs(html, origLink): 
+    for url in re.findall('''<a[^>]+href=["'](.[^"']+)["']''', html, re.I): 
+        link = url.split("#", 1)[0] if url.startswith("http") else '{uri.scheme}://{uri.netloc}'.format(uri=urlparse.urlparse(origLink)) + url.split("#", 1)[0] 
+        if link in dupcheck:
+            continue
+        dupcheck.add(link)
+        if len(dupcheck) > 99999: 
+            dupcheck.clear()
+        q.put(link) 
+
+def getHTML(link): 
+    print "processing %s" % link
+    try:
+        html = urllib.urlopen(link).read()
+        with open(os.path.join(os.path.abspath("collected_sites"), datetime.datetime.now().isoformat().replace(":",'-').replace(".",'-') + ".html"), "w") as f:
+            f.write(link)
+            f.write("\n")
+            f.write(html)
+        queueURLs(html, link) 
+    except (KeyboardInterrupt, SystemExit): 
+        raise
+    except Exception:
+        pass
+
+if __name__ == '__main__':
+    q.put(sys.argv[1])
+    while True:
+        thread.start_new_thread( getHTML, (q.get(),))
+        
