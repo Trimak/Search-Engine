@@ -12,7 +12,6 @@ def get_page(url):
     except:
         return ""
 
-print "1. get-page successful"
 
 # Help function that return first link and end position of the link
 def get_next_target(page):
@@ -26,15 +25,12 @@ def get_next_target(page):
     return url, end_quote
 
 
-print "2. get_next_target successful"
-
 # Help function union two arrays
 def union(p,q):
     for e in q:
         if e not in p:
             p.append(e)
 
-print "3. union successful"
 
 # Function that extracts all links from requested page
 def get_all_links(page):
@@ -47,8 +43,6 @@ def get_all_links(page):
         else:
             break
     return links
-
-print "4. get_all_links successful"
 
 # Initial function that starts the web crawling on a particular URL
 def crawl_web(seed):
@@ -68,8 +62,6 @@ def crawl_web(seed):
     return index, graph
 
 
-print "5. crawl web successful"
-
 #
 # Functions required for indexing, crawled pages
 #
@@ -82,7 +74,6 @@ def add_to_index(index,keyword,url):
         # not found, add new keyword to index
         index[keyword] = [url]
 
-print "6. add_to_index successful"
 
 # Help function that search the index for the keyword
 def lookup(index,keyword):
@@ -91,15 +82,12 @@ def lookup(index,keyword):
     else:
         return None
 
-print "7. lookup successful"
 
 # Function that splits page into words and adds them to index
 def add_page_to_index(index,url,content):
     words = content.split()
     for keyword in words:
         add_to_index(index,keyword,url)
-
-print "8. add_page_to_index successful"
 
 # Function for recording clicks on a particular link
 def record_user_click(index,keyword,url):
@@ -108,9 +96,6 @@ def record_user_click(index,keyword,url):
         for entry in urls:
             if entry[0] == url:
                 entry[1] += 1
-
-
-print "9. record_user_click successful"
 
 #
 # Functions required for ranking
@@ -148,8 +133,6 @@ def compute_ranks(graph):
         ranks = newranks
     return ranks
 
-print "10. compute_ranks successful"
-
 # Function that returns the one URL most likely to be the best site for that
 # keyword. If the keyword does not appear in the index return None
 def lucky_search(index, ranks, keyword):
@@ -166,15 +149,11 @@ def lucky_search(index, ranks, keyword):
     return return_url
     print url
 
-print "11. print lucky_search successful"
-
 # Function that returns the list of all URLs for that keyword. Ordered by page
 # rank. If the keyword does not appear in the index return None
 def ordered_search(index, ranks, keyword):
     pages = lookup(index, keyword)
     return quick_sort(pages, ranks)
-
-print "12. ordered_search successful"
 
 # Help function that uses quick sort algorithm to order array
 def quick_sort(pages, ranks):
@@ -191,12 +170,9 @@ def quick_sort(pages, ranks):
                 better.append(page)
     return quick_sort(better, ranks) + [pages[0]] + quick_sort(worse, ranks)
 
-print "13. quick_sort successful"
-
 #index, graph = crawl_web('http://en.wikipedia.org/wiki/Main_Page');
 #index, graph = crawl_web('http://www.udacity.com/cs101x/urank/index.html');
 index, graph = crawl_web('http://www.speedtest.net/');
-
 
 #print "\n Index: \n"
 #print index
@@ -207,6 +183,3 @@ ranks = compute_ranks(graph)
 #print ranks
 
 print ordered_search(index, ranks, 'Hummus')
-
-
-print "14. code fully executed"
